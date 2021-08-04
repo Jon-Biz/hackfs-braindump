@@ -1,22 +1,6 @@
-import './App.css';
+import './index.css';
 import React, { useState } from 'react'
-import Transcryptor from 'transcryptor'
-
-const transcryptor = new Transcryptor()
-
-const Login =
-        ({setLogin
-          }) => {
-                  return (
-                    <div>
-                      <button 
-                        onClick={ () => setLogin(true) }
-                      >
-                        Login
-                      </button>
-                    </div>
-                  )
-                }
+import Login from './Login';
 
 function Menu() {
   return (
