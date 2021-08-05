@@ -1,65 +1,36 @@
 import React, { useState } from 'react'
-import Transcryptor from 'transcryptor'
-
-const transcryptor = new Transcryptor()
 
 const connectWallet =
         sharedKey => {
                         alert(sharedKey)
                       }
 
-const connectStorage =
-        webStorageToken => {
-                              alert(webStorageToken)
-                            }
-
 const Dialog =
         ({setLogin
          }) => {
                     const [ sharedKey, setSharedKey ] = useState(false)
-                    const [ webStorageToken, setWebStorageToken ] = useState(false)
-
+                    
                     return (
                         <div>
-
-                        You web3 wallet will request permission to provide your shared key, and encrypt some data with your private key.
-
-                        <p>
-                            If have already signed up on another computer, retrieve your secret from the settings page and add it here to connect this wallet with your existing data:
-                            <input 
-                              type="test" 
-                              value={sharedKey} 
-                              onChange={e => setSharedKey(e.target.value) }
-                            />
+                          <h2>
+                            Do you want create an new account, or connect to an existing one?
+                          </h2>
+                          <p>
+                            To create a new account, click login below:
                             <button 
-                             onClick={() => connectWallet(sharedKey)}
+                              onClick={ () => setLogin(true) }
                             >
-                              Connect Wallet
+                              Crete New Account
                             </button>
-                        </p>
-
-                        <i>Optional</i>
-                        <p>
-                            If you have your own web3.storage token, add it here:
+                          </p>
+                          <p>
+                            To connect and existing account from another computer, type the shared key:
                             <input 
-                              type="test" 
-                              value={webStorageToken} 
-                              onChange={e => setWebStorageToken(e.target.value) }
-                            />
-                            <button 
-                              onClick={() => connectStorage(sharedKey)} 
-                            >
-                              Connect to Storage
-                            </button>
-
-                            Otherwise, we will persist your data on our webStorage, encrypted by your wallet's privste key.
-                        </p>
-
-                      <button 
-                        onClick={ () => setLogin(true) }
-                      >
-                        Login
-                      </button>
+                              type="text" 
+                              onChange={ e => setSharedKey(e.target.value) }
+                              />
+                              <button onClick={ () => setLogin(true) }/>
+                          </p>
                     </div>
                   )
                 }

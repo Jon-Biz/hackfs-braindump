@@ -2,15 +2,31 @@ import React, { useState } from 'react'
 
 import Dialog from './Dialog'
 
+import {
+  RecoilRoot,
+  atom,
+  selector,
+  useRecoilState,
+  useRecoilValue,
+} from 'recoil';
+
+
+const loginState = atom({
+  key: 'loginState', // unique ID (with respect to other atoms/selectors)
+  default: false, // default value (aka initial value)
+})
+
 const Login =
-        ({setLogin
-         }) => {
+        () => {
+                  const [ login, setLogin] = useRecoilState(loginState)
                   const [ showLogin, setShowLogin ] = useState(false)
 
                   const ShowLogin =
                           () => (
                                   <button 
-                                    onClick={() => setShowLogin(!showLogin)} 
+                                    onClick={
+                                      () => setShowLogin(!showLogin)
+                                    } 
                                   >
                                     Login
                                   </button>

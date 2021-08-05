@@ -11,8 +11,10 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
+    "recoil": "^0.4.0",
     "transcryptor": "file:../../web3-wallet-transcryptor/src",
-    "web-vitals": "^1.1.2"
+    "web-vitals": "^1.1.2",
+    "web3": "^1.5.0"
   },
   "scripts": {
     "start": "react-scripts start",

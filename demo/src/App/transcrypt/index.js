@@ -36,6 +36,10 @@ class Transcryptor {
     this.web3 = new Web3(this.web3Provider)
   }
 
+  hasWeb3() {
+    return window.ethereum || window.web3
+  }
+
   _getPublicKey() {
 
     const web3 = this.web3
@@ -161,4 +165,5 @@ class Transcryptor {
   }
 }
 
-export default Transcryptor
+const transcryptor = new Transcryptor()
+export default transcryptor
