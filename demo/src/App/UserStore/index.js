@@ -20,7 +20,7 @@ function init (){
 
 async function getUserIdentity() { 
     // check for ethereum wallet
-    if (!UserStore.hasWeb3()) setLoginIssue('No web3')
+    if (!hasWeb3()) setLoginIssue('No web3')
 
     // check for data in local storage
     if (!localDataExists()) setLoginIssue('No local data')
@@ -42,9 +42,7 @@ async function getUserIdentity() {
 
 function setLoginIssue (error) {
         console.error(error)
-    }
 }
-
 
 const hasWeb3 = transcryptor.hasWeb3 
 
@@ -53,7 +51,7 @@ function localDataExists () { Boolean(localData) }
 function getIdentity () {
     const identity = 
             Object.entries(localData)
-                    .reduce(UserStore.findtUserIdentity, false)
+                    .reduce(findtUserIdentity, false)
 
     return identity
 } 
