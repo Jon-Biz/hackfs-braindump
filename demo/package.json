@@ -7,7 +7,7 @@
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
     "eth-sig-util": "^3.0.1",
-    "ipfs": "^0.56.1",
+    "ipfs": "^0.55.4",
     "local-storage": "^2.0.0",
     "orbit-db": "^0.26.1",
     "react": "^17.0.2",
