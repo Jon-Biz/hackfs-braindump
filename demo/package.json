@@ -6,6 +6,7 @@
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
+    "draft-js": "^0.11.7",
     "eth-sig-util": "^3.0.1",
     "ipfs": "^0.55.4",
     "local-storage": "^2.0.0",
@@ -16,7 +17,7 @@
     "recoil": "^0.4.0",
     "transcryptor": "file:../../web3-wallet-transcryptor/src",
     "web-vitals": "^1.1.2",
-    "web3": "^1.5.0"
+    "web3": "^1.5.1"
   },
   "scripts": {
     "start": "react-scripts start",
