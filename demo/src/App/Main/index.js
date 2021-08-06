@@ -1,39 +1,7 @@
 import React, { useState } from 'react'
-
-function Menu() {
-  return (
-    <div className="menu">
-      Menu Bar
-    </div>
-  )
-}
-
-function Settings() {
-  return (
-    <div className="settings">
-      Settings Pane
-    </div>
-  )
-}
-
-function CurrentItems() {
-  return (
-    <ul>
-      <li>
-        <div>
-          <div>Title</div>
-          <div>Text</div>
-        </div>
-      </li>
-      <li>
-        <div>
-          <div>Title 2</div>
-          <div>Text</div>
-        </div>
-      </li>
-    </ul>
-  )
-}
+import Menu from './Menu'
+import CurrentItems from './CurrentItems'
+import Settings from './Settings'
 
 const Main =
         () => (
@@ -46,6 +14,5 @@ const Main =
             <Settings />
           </div>
         )
-
 
 export default Main
