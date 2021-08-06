@@ -1,23 +1,27 @@
 import React from 'react'
-import 'draft-js/dist/Draft.css'
-
 import {Editor, EditorState} from 'draft-js';
 import 'draft-js/dist/Draft.css';
 
-function MyEditor() {
-    const [editorState, setEditorState] = React.useState(
-      () => EditorState.createEmpty(),
-    );
-  
-    return <Editor editorState={editorState} onChange={setEditorState} />;
-  }
-  
+import './Text.css'
+
+const MyEditor = 
+        () => {
+                    const [editorState, setEditorState] = React.useState(
+                        () => EditorState.createEmpty(),
+                    );
+                    
+                    const onChange = (editorState) => {
+                        console.log(editorState);
+                        setEditorState(editorState);
+                    }
+
+                    return <Editor editorState={editorState} onChange={onChange} />;
+                }
 
 const Text =
         () => (
-            <div>
-                Text
-            <MyEditor />
+            <div className="text-editor">
+                <MyEditor />
             </div>
         )  
 
