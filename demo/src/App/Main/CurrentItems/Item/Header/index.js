@@ -5,7 +5,7 @@ const Header =
         () => (
             <div>
                 <HeaderMenu />                
-                <div>Title</div>
+                <input type="text" value="Title" />
             </div>
         )  
 
