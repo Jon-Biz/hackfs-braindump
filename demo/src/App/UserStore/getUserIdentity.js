@@ -1,15 +1,13 @@
-import transcryptor from "../transcrypt"
+import transcryptor from "./transcrypt"
 import localStorage from 'local-storage'
 
-
+let localStr = false
 let localData = false
 let ready = null
 
 function accessLocalStorage (){
     try {
-        const localStr = localStorage.getItem('braindump')
-        localData = JSON.parse(localStr)
-
+        localStr = localStorage('braindump')
     }
     catch (e) {
         console.error(e)
@@ -20,28 +18,24 @@ function accessLocalStorage (){
 
 async function getUserIdentity() {
     // get local data
-    const localStorageOk = accessLocalStorage()
-    if (!localStorageOk) setLoginIssue(`Failed to retrieve data`) 
+    accessLocalStorage()
 
+    if (!localStr) setLoginIssue(`Failed to retrieve data`) 
     // check for ethereum wallet
-    if (!hasWeb3()) setLoginIssue('No web3')
+    else if (!hasWeb3()) setLoginIssue('No web3')
 
     // check for data in local storage
-    if (!localDataExists()) setLoginIssue('No local data')
+    else if (!localDataExists()) setLoginIssue('No local data')
 
     // check for user identity                
-    const hasKey = await transcryptor._getPublicKey()
-    if (!hasKey) setLoginIssue('No key')
+    else if (!await transcryptor._getPublicKey()) setLoginIssue('No key')
 
-    // get user identity
-    const identity = getIdentity()
-    if (!identity) setLoginIssue('No local user identity')
+    else if (!getIdentity()) setLoginIssue('No local user identity')
 
     // decrypt user identity
-    const decrypted = decryptUserIdentity(identity)
-    if (!decrypted) setLoginIssue('couldn\'t decrypt user Identity')
+    else if (!decryptUserIdentity(getIdentity())) setLoginIssue('couldn\'t decrypt user Identity')
 
-    return decrypted
+    return
 } 
 
 function setLoginIssue (error) {
@@ -85,4 +79,6 @@ function decryptUserIdentity(identity) {
     }                
 } 
 
-export default getUserIdentity
+transcryptor.getAccountId().then(id => { console.log(id) })
+
+export default transcryptor.getAccountId

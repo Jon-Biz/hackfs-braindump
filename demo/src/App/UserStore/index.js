@@ -1,50 +1,78 @@
-import getUserIdentity from "./getUserIdentity"
 import IPFS from "ipfs"
 import OrbitDB from "orbit-db"
+import transcryptor from "./transcrypt"
 
-async function init() {
-// Create IPFS instance
-    const initIPFSInstance = async () => {
-        return await IPFS.create({ repo: "./path-for-js-ipfs-repo" })
-    };
-    
-    initIPFSInstance().then(async ipfs => {
-        const orbitdb = await OrbitDB.createInstance(ipfs)
-    
+// import getUserIdentity from "./getUserIdentity"
+
+class UserStore {
+    constructor() {
+        this.ready = this.init()
+    }
+
+    async init() {
+        // Create IPFS instance
+        const ipfs = await IPFS.create({ repo: "./path-for-js-ipfs-repo" })
+        this.orbitdb = await OrbitDB.createInstance(ipfs)
+    }
+
+    async openDB(id) {
+        await this.ready
         // Create / Open a database
-        const db = await orbitdb.log("hello")
+        const db = await this.orbitdb.log(id)
         await db.load()
 
         // Listen for updates from peers
         db.events
-          .on( "replicated"
-                     , address => {
+            .on( "replicated"
+                        , address => {
                                     console.log(
                                         db.iterator({ limit: -1 })
-                                          .collect()
+                                            .collect()
                                     )
-                                  }
-          )
-    
+                                    }
+            )
+
         // Add an entry
         const hash = await db.add("world")
         console.log(hash)
-    
+
         // Query
         const result = db.iterator({ limit: -1 }).collect()
         console.log(JSON.stringify(result, null, 2))
-    });
+    }
+
+    async closeDB(id) {
+        await this.ready
+
+        const db = await this.orbitdb.log(id)
+
+        db.close()
+    }
+
+    async openUserData() {
+        await this.ready
+
+        // const id = getUserIdentity()
+
+        // this.db = await this.orbitdb.log(id)
+
+    }
+
+    async createUserData() {
+        await this.ready
+
+        const id = await transcryptor.getAccountId()
+
+        this.db = await this.orbitdb.log(id)
+        const address = this.db.address
+
+        console.log({address})
+
+        debugger
+    }
 }
 
-let user
-async function getUserData(userIdentity) {
-    user = await OrbitDB.get(userIdentity)
-}
+const store = new UserStore()
 
-async function getUser(cid) {
-    const userIdentity = await getUserIdentity()
-}
-
-init()
-
-export default init
+store.createUserData()
+export default store

@@ -40,54 +40,60 @@ class Transcryptor {
     return window.ethereum || window.web3
   }
 
-  _getPublicKey() {
+  async getAccountId() {
+    await this.ready
 
+    const web3 = this.web3
+
+    const retreiveAccountId = 
+            ( resolve
+            , reject
+              ) =>  web3.eth
+                        .getAccounts(
+                          ( error
+                          , accounts 
+                            ) => { if (!error) { resolve(accounts[0]) } 
+                                   else { reject(error) }
+                                  }
+                        )
+            
+    return new Promise(retreiveAccountId)
+  }   
+
+  async getPublicKey() {
+    await this.ready
+
+    const account = await this.getAccountId()
     const web3 = this.web3
 
     const retreivePublicKeyP = 
             ( resolve
             , reject
               ) => {
-                    const onResult =
-                            ( error
-                            , encryptionPublicKey
-                              ) => {
-                                      if (!error) {
-                                        this.encryptionPublicKey = 
-                                              encryptionPublicKey.result
+                      const onResult =
+                              ( error
+                              , encryptionPublicKey
+                                ) => { if (error) reject(error)
+                                       else resolve(encryptionPublicKey)    
+                                       }
 
-                                        resolve(void 0)    
-                                      } else {
-                                        
-                                        console.error(error)
-                                        reject(error)
-                                      }
-                                    }
-
-                    web3.eth
-                      .getAccounts(
-                        ( error
-                        , accounts 
-                        ) => {
-                              if (error) { console.error(error) }
-
-                              const payload = {
-                                jsonrpc: '2.0'
-                              , method: 'eth_getEncryptionPublicKey'
-                              , params: [accounts[0]]
-                              , from: accounts[0]
-                              }
-
-                              web3.currentProvider.sendAsync(
-                                payload                                
-                              , onResult
-                              )
-                            }
+                      const payload = {
+                        jsonrpc: '2.0'
+                      , method: 'eth_getEncryptionPublicKey'
+                      , params: [account]
+                      , from: account
+                      }
+                                  
+                      web3.currentProvider.sendAsync(
+                        payload                                
+                      , onResult
                       )
-                  }
+                    }
 
     const getKeyP = 
             new Promise(retreivePublicKeyP)
+
+    getKeyP.then(key => { this.encryptionPublicKey = key })
 
     return getKeyP
   }
@@ -95,7 +101,7 @@ class Transcryptor {
   async encryptPublicKey(dataObj) {
     await this.ready
 
-    if (!this.encryptionPublicKey) await this._getPublicKey()
+    if (!this.encryptionPublicKey) await this.getPublicKey()
 
     const data = JSON.stringify(dataObj)
 
