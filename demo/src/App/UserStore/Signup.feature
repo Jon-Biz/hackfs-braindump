@@ -7,11 +7,11 @@ Scenario: When a user signs up, we need to set up their storage and root identit
 
 Given a user
 When they click the sign up button
-    When they indicate that they want to connect to an existing account
+    When they have indicated that they want to connect to an existing account
         Then we should ask for their root identity
     When they indicate they want to sign up
         Then we should create their root identity
-        
+
     When we create or they submit their root identity
         Then we should add it to local storage
         And we should have encrypted their root data with their public key
