@@ -1,18 +1,14 @@
 import './index.css';
 import React from 'react'
 import {
-  atom,
   useRecoilState,
 } from 'recoil';
 
-import UserStore from './UserStore'
+// import UserStore from './UserStore'
 import Login from './Login';
 import Main from './Main';
 
-const loginState = atom({
-  key: 'loginState', // unique ID (with respect to other atoms/selectors)
-  default: false, // default value (aka initial value)
-})
+import loginState from '../Recoil/Atoms/loginState'
 
 const App = 
         () => {
@@ -25,6 +21,9 @@ const App =
 
 const AppWithLogin = 
         () => {
-
+                return <div>
+                        <a>learn react</a>
+                        <App />
+                </div>
         }
-export default App
+export default AppWithLogin

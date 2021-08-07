@@ -10,11 +10,7 @@ import {
   useRecoilValue,
 } from 'recoil';
 
-
-const loginState = atom({
-  key: 'loginState', // unique ID (with respect to other atoms/selectors)
-  default: false, // default value (aka initial value)
-})
+import loginState from  '../../Recoil/Atoms/loginState'
 
 const Login =
         () => {
@@ -44,13 +40,13 @@ const Login =
                     )
                   }
                   else {
-                  return (
-                    <ShowLogin
-                      showLogin={showLogin}
-                      setShowLogin={setShowLogin}
-                    />
-                  )
+                    return (
+                      <ShowLogin
+                        showLogin={showLogin}
+                        setShowLogin={setShowLogin}
+                      />
+                    )
+                  }
                 }
-              }
 
 export default Login
