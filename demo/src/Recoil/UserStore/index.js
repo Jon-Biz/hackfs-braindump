@@ -24,7 +24,19 @@ OrbitDB.addDatabaseType(GraphStore.type, GraphStore)
 class UserStore {
     constructor() {
         this.ready = this.init()
+        this.val = 'hello world'
     }
+
+    async getItem() { return this.val }
+    async setItem(val) { this.val = val }
+    async onChange(uid, cb) { 
+        setInterval( async () => {
+            this.setItem(this.val + this.val)
+            const val = await this.getItem()
+            console.log({val})
+            cb(val)
+        }, 5000)
+    } 
 
     async init() {
         // Create IPFS instance
