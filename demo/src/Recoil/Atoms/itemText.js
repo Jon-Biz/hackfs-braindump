@@ -8,11 +8,11 @@ import UserStore from '../UserStore'
 
 let item = { itemText: 'h' }
 
-const syncStorageEffect = userID => ({setSelf, trigger, onSet}) => {
+const syncStorageEffect = dataId => ({setSelf, trigger, onSet}) => {
 
     // Initialize atom value to the remote storage state
     if (trigger === 'get') { // Avoid expensive initialization
-      setSelf(UserStore.getItem(userID)) // Call synchronously to initialize
+      setSelf(UserStore.getItem(dataId)) // Call synchronously to initialize
     }
 
     onSet(newValue => {
@@ -20,13 +20,13 @@ const syncStorageEffect = userID => ({setSelf, trigger, onSet}) => {
     })
   
     // Subscribe to remote storage changes and update the atom value
-    UserStore.onChange(userID, userInfo => {
+    UserStore.onChange(dataId, userInfo => {
       setSelf(userInfo) // Call asynchronously to change value
     })
   
     // Cleanup remote storage subscription
     return () => {
-      UserStore.cancelListener(userID)
+      UserStore.cancelListener(dataId)
     }
   }
   
