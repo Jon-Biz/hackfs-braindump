@@ -1,17 +1,20 @@
-import React, { useState } from 'react'
+import React, { useState, Suspense } from 'react'
 
 import Item from './Item'
 
+const Waiting = () => (<div>Loading...</div>)
+
 function CurrentItems() {
   return (
-    <ul>
-      <li>
-        <Item />
-      </li>
-      <li>
-        <Item />
-      </li>
-    </ul>
+    <Suspense fallback={Waiting()}
+    >
+      <ul>
+        <li>
+          <Item />
+        </li>
+      </ul>
+
+    </Suspense>
   )
 }
 
