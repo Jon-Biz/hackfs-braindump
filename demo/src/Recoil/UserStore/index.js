@@ -24,46 +24,63 @@ OrbitDB.addDatabaseType(GraphStore.type, GraphStore)
 class UserStore {
     constructor() {
         this.ready = this.init()
-        this.val = 'hello world'
     }
 
-    async getItem() { return this.val }
-    async setItem(val) { this.val = val }
+    async getItem() { 
+        await this.ready
+
+        let root = this.db.getVertex('root')
+        if (!root) {
+            root = '{ "id": "root", "text": "hello world" }'
+            this.db.createVertex('root', root)
+        }
+
+        console.log(root)
+        return JSON.parse(root).text || ''
+    }
+
+    async setItem(val) {
+        await this.ready
+
+        const rootStr = this.db.getVertex('root')
+        const root = JSON.parse(rootStr)
+
+        root.text = val
+
+        console.log(root)
+
+        const updatedRoot = JSON.stringify(root)
+        this.db.updateVertex('root', updatedRoot)
+    }
+
     async onChange(uid, cb) { 
-        setInterval( async () => {
-            this.setItem(this.val + this.val)
-            const val = await this.getItem()
-            console.log({val})
-            cb(val)
-        }, 5000)
+        // setInterval( async () => {
+        //     this.setItem(this.val + this.val)
+        //     const val = await this.getItem()
+        //     console.log({val})
+        //     cb(val)
+        // }, 5000)
     } 
 
     async init() {
         // Create IPFS instance
         // const ipfs = IpfsClient(IPFS)
         const ipfs = await IPFS.create({ repo: "./development" })
-        // const provider = new ethers.providers.Web3Provider(window.ethereum);
-        // const wallet = provider.getSigner();
-
-        // const identity = await Identities.createIdentity({
-        //     type: "ethereum",
-        //     wallet,
-        // })
         this.orbitdb = await OrbitDB.createInstance(ipfs)
         this.address = "0x912F479c8E25DE77e77b467712144488f2C314a6"
 
-        console.log(this.orbitdb.address)
-        // this.address = await this.orbitdb.determineAddress('user.posts', 'eventlog', {
-        //     accessController: {
-        //       write: [
-        //         identity.address
-        //     ]}
-        //   })
+        // const id = await transcryptor.getAccountId()
 
-        // console.log(this.address)
-        // debugger
-
+        this.db = await this.orbitdb.open(this.address, { type: GraphStore.type, create: true })
+        await this.db.load()
+        // this.db.createVertex('root', '{ "id": "root" }')
+        
+        this.addReplicationListener()
     }
+    async loadUserDb() {
+    }
+
+    cancelListener() {}
 
     async openDB(id) {
         await this.ready
@@ -109,17 +126,6 @@ class UserStore {
 
     }
 
-    async loadUserDb() {
-        await this.ready
-
-        // const id = await transcryptor.getAccountId()
-
-        this.db = await this.orbitdb.open(this.address, { type: GraphStore.type, create: true })
-        await this.db.load()
-        this.db.createVertex('root', '{ "id": "root" }')
-        
-        this.addReplicationListener()
-    }
 
     async setData(data) {
         await this.ready
@@ -147,3 +153,31 @@ const store = new UserStore()
 
 store.loadUserDb()
 export default store
+
+// async init() {
+//     // Create IPFS instance
+//     // const ipfs = IpfsClient(IPFS)
+//     const ipfs = await IPFS.create({ repo: "./development" })
+//     // const provider = new ethers.providers.Web3Provider(window.ethereum);
+//     // const wallet = provider.getSigner();
+
+//     // const identity = await Identities.createIdentity({
+//     //     type: "ethereum",
+//     //     wallet,
+//     // })
+//     this.orbitdb = await OrbitDB.createInstance(ipfs)
+//     // this.address = "0x912F479c8E25DE77e77b467712144488f2C314a6"
+
+//     console.log(this.orbitdb.address)
+//     this.loadUserDb()
+//     // this.address = await this.orbitdb.determineAddress('user.posts', 'eventlog', {
+//     //     accessController: {
+//     //       write: [
+//     //         identity.address
+//     //     ]}
+//     //   })
+
+//     // console.log(this.address)
+//     // debugger
+
+// }

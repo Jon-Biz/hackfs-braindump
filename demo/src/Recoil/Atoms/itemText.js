@@ -6,8 +6,6 @@ import {
   
 import UserStore from '../UserStore'
 
-let item = { itemText: 'h' }
-
 const syncStorageEffect = dataId => ({setSelf, trigger, onSet}) => {
 
     // Initialize atom value to the remote storage state
