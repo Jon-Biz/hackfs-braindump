@@ -1,20 +1,9 @@
 import IPFS from "ipfs"
 import OrbitDB from "orbit-db"
-import transcryptor from "./transcrypt"
+// import transcryptor from "./transcrypt"
 import GraphStore from './orbit-db-graphstore/GraphStore'
 import Identities from "orbit-db-identity-provider";
 import { ethers } from "ethers";
-
-import IpfsClient from 'ipfs-http-client'
-
-import {
-    useRecoilState,
-} from 'recoil';
-
-// Create IPFS instance
-// const initIPFSInstance = async () => {
-//   return await IPFS.create({ repo: "./path-for-js-ipfs-repo" });
-// };
 
 // const orbitdb = await OrbitDB.createInstance(ipfs);
 
@@ -29,28 +18,27 @@ class UserStore {
     async getItem() { 
         await this.ready
 
-        let root = this.db.getVertex('root')
+        let root = this.db.getVertex('doot')
+     
+        debugger
         if (!root) {
             root = '{ "id": "root", "text": "hello world" }'
-            this.db.createVertex('root', root)
+            this.db.createVertex('doot', root)
         }
 
-        console.log(root)
         return JSON.parse(root).text || ''
     }
 
     async setItem(val) {
         await this.ready
 
-        const rootStr = this.db.getVertex('root')
+        const rootStr = this.db.getVertex('doot')
         const root = JSON.parse(rootStr)
 
         root.text = val
 
-        console.log(root)
-
         const updatedRoot = JSON.stringify(root)
-        this.db.updateVertex('root', updatedRoot)
+        this.db.updateVertex('doot', updatedRoot)
     }
 
     async onChange(uid, cb) { 
@@ -61,22 +49,32 @@ class UserStore {
         //     cb(val)
         // }, 5000)
     } 
-
+    // s {root: "zdpuAxrk5koF1NE3Rrir2wAPYXgTYHq71wcnhhNsPxgBCrijJ", path: "0x912F479c8E25DE77e77b467712144488f2C314a6"}
     async init() {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const wallet = provider.getSigner();
+        const identity = await Identities.createIdentity({
+          type: "ethereum",
+          wallet,
+        });
+        
         // Create IPFS instance
         // const ipfs = IpfsClient(IPFS)
-        const ipfs = await IPFS.create({ repo: "./development" })
-        this.orbitdb = await OrbitDB.createInstance(ipfs)
-        this.address = "0x912F479c8E25DE77e77b467712144488f2C314a6"
+        const ipfs = await IPFS.create({ repo: "./development3" })
+        this.orbitdb = await OrbitDB.createInstance(ipfs, { identity })
+        // this.address = '/orbitdb/zdpuAxrk5koF1NE3Rrir2wAPYXgTYHq71wcnhhNsPxgBCrijJ/0x912F479c8E25DE77e77b467712144488f2C314a6'
 
+        // console.log(JSON.stringify(await this.orbitdb.determineAddress(this.address, GraphStore.type)))
         // const id = await transcryptor.getAccountId()
 
-        this.db = await this.orbitdb.open(this.address, { type: GraphStore.type, create: true })
+        this.db = await this.orbitdb.open('woot', { type: GraphStore.type, create: true })
+        console.log(this.db.address.toString())
         await this.db.load()
         // this.db.createVertex('root', '{ "id": "root" }')
         
         this.addReplicationListener()
     }
+
     async loadUserDb() {
     }
 
