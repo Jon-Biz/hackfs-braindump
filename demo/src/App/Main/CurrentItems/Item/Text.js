@@ -6,7 +6,9 @@ import {
 import {
     Editor, 
     ContentState,
-    EditorState
+    EditorState,
+    convertToRaw,
+    convertFromRaw
   } from 'draft-js'
 import 'draft-js/dist/Draft.css';
 
@@ -21,18 +23,34 @@ const EditorComponent =
                     , setTextState 
                     ] = useRecoilState(itemText)
 
-                    const contentState = ContentState.createFromText(text)
-                    const editorState = EditorState.createWithContent(contentState)
+                    let editorState
+
+                    try {
+                      debugger
+                      const rawJson = JSON.parse(text)
+                      const contentState = convertFromRaw(rawJson)
+                      editorState = EditorState.createWithContent(contentState)
+                    }
+                    catch (e) {
+                      console.log('fail whale')
+                      editorState = EditorState.createEmpty()
+                      // const raw = convertToRaw(editorState.getCurrentContent())
+                      // const rawStr = JSON.stringify(raw)
+                      // const rawJson = JSON.parse(rawStr)
+                      // const unRaw = convertFromRaw(rawJson)
+                      // editorState = EditorState.createWithContent(unRaw)
+                    }
             
                     const onChange = 
                             editorState => { 
-                                const text = editorState.getCurrentContent().getPlainText('\u0001')
+                                const json = convertToRaw(editorState.getCurrentContent())
+                                const text = JSON.stringify(json)
                                 setTextState(text) 
                             }
 
                     return <Editor 
-                                editorState={editorState} 
-                                onChange={onChange} 
+                              editorState={editorState} 
+                              onChange={onChange} 
                             />
                 }
 

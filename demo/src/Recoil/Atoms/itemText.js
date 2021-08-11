@@ -3,7 +3,7 @@ import {
     selector,
     DefaultValue
   } from 'recoil'
-  
+
 import UserStore from '../UserStore'
 
 const syncStorageEffect = dataId => ({setSelf, trigger, onSet}) => {
