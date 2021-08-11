@@ -39,6 +39,10 @@ class UserStore {
 
         const updatedRoot = JSON.stringify(root)
         this.db.updateVertex('doot', updatedRoot)
+
+        const item = await this.getItem()
+        console.log(item)
+        console.log(this.db.allVertices())
     }
 
     async onChange(uid, cb) { 
@@ -58,19 +62,42 @@ class UserStore {
           wallet,
         });
         
+        debugger
         // Create IPFS instance
         // const ipfs = IpfsClient(IPFS)
         const ipfs = await IPFS.create({ repo: "./development3" })
         this.orbitdb = await OrbitDB.createInstance(ipfs, { identity })
         // this.address = '/orbitdb/zdpuAxrk5koF1NE3Rrir2wAPYXgTYHq71wcnhhNsPxgBCrijJ/0x912F479c8E25DE77e77b467712144488f2C314a6'
 
-        // console.log(JSON.stringify(await this.orbitdb.determineAddress(this.address, GraphStore.type)))
+        const add = await this.orbitdb.determineAddress('woot', GraphStore.type, { accessController: {
+            write: [
+                identity.id
+          ]
+        }
+        }
+          )
+          
+          console.log('0x912F479c8E25DE77e77b467712144488f2C314a6')
+          console.log(add.toString())
+
+          debugger
         // const id = await transcryptor.getAccountId()
 
-        this.db = await this.orbitdb.open('woot', { type: GraphStore.type, create: true })
+        this.db = await this.orbitdb.open(add.toString(), { type: GraphStore.type, create: true, accessController: {
+            write: [
+                identity.address
+          ]
+        }})
+
+        await this.db.access.grant('write', identity.address)
+        
+
+        this.ready = true
+
         console.log(this.db.address.toString())
         await this.db.load()
         // this.db.createVertex('root', '{ "id": "root" }')
+        console.log(this.db.allVertices())
         
         this.addReplicationListener()
     }
